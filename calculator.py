@@ -8,6 +8,7 @@ from tkinter import messagebox as msg
 
 #####################
 window=Tk()
+window.title("CALCULATOR")
 window.geometry("400x400")
 
 
@@ -20,18 +21,37 @@ buttons=[]
 numbers_list=[]
 #numbers to be operrated
 exp=[]
-answer=0
 temp=[]
 class operations:
     def __init__(self,n):
         self.it=n
+        self.answer=0
+    def loop(self):
+         self.it+=2
+         numbers_list.append(self.answer)
+         print(self.answer)
+         exp[:]=[]
+         box.delete(0,END)
+         box.insert(0,self.answer)
     def docalc(self):
         for x in exp:
             if x=='+':
-                answer=numbers_list[self.it]+numbers_list[self.it+1]
-                self.it+=2
-                numbers_list.append(answer)
-                print(numbers_list)
+                self.answer=numbers_list[self.it]+numbers_list[self.it+1]
+                self.loop()
+            if x=='-':
+                self.answer=numbers_list[self.it]-numbers_list[self.it+1]
+                self.loop()
+            if x=='*':
+                self.answer=numbers_list[self.it]*numbers_list[self.it+1]
+                self.loop()
+            if x=='/':
+                try:
+                    self.answer=numbers_list[self.it]/numbers_list[self.it+1]
+                    self.loop()
+                except ZeroDivisionError:
+                    box.delete(0,END)
+                    box.insert(0,"Division by zero")
+        
 opr=operations(0)
 def button_click(x):
     temp_no=''
@@ -40,12 +60,21 @@ def button_click(x):
             print(e_x)
             temp_no+=str(e_x)
         temp[:]=[]
-        numbers_list.append(int(temp_no))
+        if temp_no!='':
+            numbers_list.append(int(temp_no))
         exp.append(x)
         if x=='=':
             opr.docalc()
+        if x!='=':
+            box.insert("end",x)
+    elif x=='C':
+        box.delete(0,END)
+        numbers_list[:]=[]
+        exp[:]=[]
+        opr.it=0
     else:
         temp.append(x)
+        box.insert("end",str(x))
 ###########################
 def button_gen(buttons):
     nx=0
@@ -68,9 +97,11 @@ def button_gen(buttons):
     b4.place(x=280,y=140)
     b5=Button(window,text='=',height=2,width=12,command=lambda:button_click('='))
     b5.place(x=230,y=190)
-    
+    b5=Button(window,text='C',height=2,width=12,command=lambda:button_click('C'))
+    b5.place(x=230,y=260)
 button_gen(buttons)
-
+box=Entry(window,width=50)
+box.place(x=50,y=50)
             
 
 ###########################
